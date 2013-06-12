@@ -1,3 +1,8 @@
+/**
+ * This is super ugly code put together from a few sources
+ * It needs to be cleaned up, somehow, some way :'(
+ */
+
 var tagr = require('tagr');
 
 var __slice = [].slice,
