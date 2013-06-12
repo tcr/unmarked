@@ -40,30 +40,6 @@ JsonML = (function() {
 
   })();
 
-function parseHTML (html) {
-  var htmlparser = require("htmlparser2");
-
-  var root = [], cur = root, queue = [cur];
-  var parser = new htmlparser.Parser({
-    onopentag: function(tag, attrs){
-      var el = [tag, attrs];
-      queue.push(cur);
-      cur.push(el)
-      cur = el;
-    },
-    ontext: function (str){
-      cur.push(str)
-    },
-    onclosetag: function (tag) {
-      cur = queue.pop();
-    }
-  });
-  parser.write(html);
-  parser.end();
-
-  return tagr.parse(['html', {}].concat(root));
-}
-
 Markdown = {
     serializeTree: (function() {
       var escapeChars, escapeMarkdown, hasMargin, isInline, serialize;
@@ -486,5 +462,5 @@ var toMarkdownTree = (function() {
 })();
 
 exports.parse = function (str) {
-  return Markdown.serializeTree(toMarkdownTree(parseHTML(str).toJSON().slice(2)));
+  return Markdown.serializeTree(toMarkdownTree(tagr.parse(String(str), {whitespace: false}).toJSON().slice(2)));
 };

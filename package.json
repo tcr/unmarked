@@ -1,11 +1,11 @@
 {
   "name": "unmarked",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Parse HTML into Markdown, a companion for marked.",
   "main": "index.js",
   "dependencies": {
     "htmlparser2": "~3.1.2",
-    "tagr": "~0.0.7-4"
+    "tagr": "0.0.8"
   },
   "repository": "",
   "author": "",
