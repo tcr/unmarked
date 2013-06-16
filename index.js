@@ -343,6 +343,7 @@ var toMarkdownTree = (function() {
         ret.push(['para'].concat(nodeToTree(node)));
         break;
       case 'div':
+      case 'span':
         if (node.length <= 2) {
         continue;
         }
