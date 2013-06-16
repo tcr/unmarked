@@ -255,7 +255,7 @@ Markdown = {
             ret = '  \n' + opts.prefix;
             break;
 
-          case 'link':
+          case 'a':
             if (ml.children.length === 1 && typeof ml.children[0] === 'string' && ml.children[0] === ((_ref = ml.attrs) != null ? _ref.href : void 0)) {
               ret = '<' + ml.children[0].replace(/>/g, '\>') + '>';
             } else {
@@ -286,7 +286,7 @@ Markdown = {
             break;
 
           case 'img':
-            ret = '![' + escapeMarkdown(((_ref3 = ml.attrs) != null ? _ref3.alt : void 0) || '') + '](' + escapeMarkdown(((_ref4 = ml.attrs) != null ? _ref4.href : void 0) || '') + (((_ref5 = ml.attrs) != null ? _ref5.title : void 0) ? ' "' + escapeChars(ml.attrs.title, '"') + '"' : '') + ')';
+            ret = '![' + escapeMarkdown(((_ref3 = ml.attrs) != null ? _ref3.alt : void 0) || '') + '](' + escapeMarkdown((ml.attrs || {}).src || '') + (((_ref5 = ml.attrs) != null ? _ref5.title : void 0) ? ' "' + escapeChars(ml.attrs.title, '"') + '"' : '') + ')';
         }
 
         return ret;

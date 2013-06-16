@@ -1,6 +1,6 @@
 {
   "name": "unmarked",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Parse HTML into Markdown, a companion for marked.",
   "main": "index.js",
   "dependencies": {
