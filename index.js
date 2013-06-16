@@ -345,7 +345,7 @@ var toMarkdownTree = (function () {
 
             while (true) {
               // Handle this span and all nested spans.
-              var styles = [], str = '', href = null;
+              var styles = [], children = [], href = null;
 
               function consume (cur) {
                 if (cur.length <= 2) {
@@ -360,14 +360,18 @@ var toMarkdownTree = (function () {
                   href = cur[1].href;
                 }
 
-                var child = cur.splice(2, 1)[0];
-                if (typeofJSON(child) == 'array') {
-                  if (!consume(child)) {
-                    // Move to next element, or return null
-                    return consume(cur);
+                while (cur.length > 2) {
+                  var child = cur.splice(2, 1)[0];
+                  if (typeofJSON(child) == 'array' && ranking.indexOf(child[0]) > -1) {
+                    if (!consume(child)) {
+                      // Element ended. Move to next element, or return null
+                      return consume(cur);
+                    }
+                    // Create new segment starting here.
+                    return true;
+                  } else {
+                    children.push(child);
                   }
-                } else {
-                  str = String(child);
                 }
                 return true;
               }
@@ -381,6 +385,7 @@ var toMarkdownTree = (function () {
                 return styles.indexOf(style) != -1;
               });
 
+              // Merge with previous nodes as depp as possible...
               var cur = ret, j = 0;
               sortedstyles.forEach(function (style, i) {
                 var last = cur[cur.length - 1];
@@ -390,13 +395,14 @@ var toMarkdownTree = (function () {
                 }
               });
 
+              // ...and create the rest.
               sortedstyles.slice(j).forEach(function (style) {
                 var next = [style, style == 'a' ? { href: href } : {}];
                 cur.push(next);
                 cur = next;
               })
 
-              cur.push(str);
+              cur.push.apply(cur, children);
             }
 
             break;
