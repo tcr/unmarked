@@ -298,11 +298,13 @@ Markdown = {
   };
 
 var toMarkdownTree = (function () {
-  var nodeToTree = function(n) {
-    ret = [];
+  var nodeToTree = function (n) {
+    var ret = [];
 
     n.slice(2).forEach(function (node) {
-      if (typeofJSON(node) === 'array') {
+      if (typeofJSON(node) === 'string') {
+        ret.push(node);
+      } else if (typeofJSON(node) === 'array') {
         switch (node[0]) {
           case 'h1':
           case 'h2':
@@ -318,7 +320,7 @@ var toMarkdownTree = (function () {
             break;
           case 'p':
             if (node.length <= 2) {
-              return
+              return;
             }
             ret.push(['para'].concat(nodeToTree(node)));
             break;
@@ -419,11 +421,9 @@ var toMarkdownTree = (function () {
             if (node.length <= 2) {
               return;
             }
-            ret = ret.concat(nodeToTree(node));
+            ret.push.apply(ret, nodeToTree(node));
             break;
         }
-      } else if (typeofJSON(node) === 'string') {
-        ret.push(node);
       }
     });
 
@@ -436,9 +436,10 @@ var toMarkdownTree = (function () {
 })();
 
 exports.parseJSON = function (json) {
-  return Markdown.serializeTree(toMarkdownTree(json.slice(2)));
+  var mdtree = toMarkdownTree(json.slice(2));
+  return Markdown.serializeTree(mdtree);
 };
 
 exports.parse = function (str) {
-  exports.parseJSON(tagr.parse(String(str)).toJSON());
+  return exports.parseJSON(tagr.parse(String(str)).toJSON());
 };
