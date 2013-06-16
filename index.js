@@ -302,166 +302,161 @@ var toMarkdownTree = (function() {
   nodeToTree = function(n) {
     var attrs, attrs2, cur, i, j, key, keys, last, next, nextspan, node, rank, rankkeys, ranksort, ret, spanAttrs, x, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _n, _ref, _ref1, _ref2, _ref3, _ref4;
     ret = [];
-    spanAttrs = function (node) {
-    var attrs, href;
-    attrs = {};
-    if ('data-bold' in node[1]) {
-      attrs.strong = true;
-    }
-    if ('data-italic' in node[1]) {
-      attrs.em = true;
-    }
-    if ('href' in node[1]) {
-      attrs.link = node[1].href;
-    }
-    if ('data-code' in node[1]) {
-      attrs.inlinecode = true;
-    }
-    return attrs;
-    };
+
     _ref = n.slice(2);
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-    node = _ref[i];
-    if (typeofJSON(node) === 'array') {
-      switch (node[0]) {
-      case 'h1':
-      case 'h2':
-      case 'h3':
-      case 'h4':
-      case 'h5':
-      case 'h6':
-        ret.push([
-        'header', {
-          level: Number(node[0].charAt(1))
-        }
-        ].concat(nodeToTree(node)));
-        break;
-      case 'p':
-        if (node.length <= 2) {
-        continue;
-        }
-        ret.push(['para'].concat(nodeToTree(node)));
-        break;
-      case 'div':
-      case 'span':
-        if (node.length <= 2) {
-        continue;
-        }
-        ret = ret.concat(nodeToTree(node));
-        break;
-      case 'pre':
-        ret.push(['code_block'].concat(nodeToTree(node)));
-        break;
-      case 'ul':
-        ret.push(['bulletlist'].concat(nodeToTree(node)));
-        break;
-      case 'ol':
-        ret.push(['numberlist'].concat(nodeToTree(node)));
-        break;
-      case 'li':
-        ret.push(['listitem'].concat(nodeToTree(node)));
-        break;
-      default:
-        if (['strong', 'em', 'link', 'inlinecode'].indexOf(node[0]) > -1) {
-        rankkeys = ['strong', 'em', 'link', 'inlinecode'];
-        rank = {};
-        attrs = spanAttrs(node);
-        for (_j = 0, _len1 = rankkeys.length; _j < _len1; _j++) {
-          key = rankkeys[_j];
-          rank[key] = Number(attrs[key] != null);
-        }
-        keys = (function() {
-          var _results;
-          _results = [];
-          for (key in attrs) {
-          _results.push(key);
+      node = _ref[i];
+      if (typeofJSON(node) === 'array') {
+        switch (node[0]) {
+        case 'h1':
+        case 'h2':
+        case 'h3':
+        case 'h4':
+        case 'h5':
+        case 'h6':
+          ret.push([
+          'header', {
+            level: Number(node[0].charAt(1))
           }
-          return _results;
-        })();
-        for (j = _k = _ref1 = i + 1, _ref2 = n.length; _ref1 <= _ref2 ? _k < _ref2 : _k > _ref2; j = _ref1 <= _ref2 ? ++_k : --_k) {
-          nextspan = n[j];
-          if (!(typeofJSON(nextspan) === 'array' && nextspan[0] === 'a')) {
+          ].concat(nodeToTree(node)));
           break;
+        case 'p':
+          if (node.length <= 2) {
+          continue;
           }
-          attrs2 = spanAttrs(nextspan);
-          keys = (function() {
-          var _l, _len2, _results;
-          _results = [];
-          for (_l = 0, _len2 = rankkeys.length; _l < _len2; _l++) {
-            key = rankkeys[_l];
-            if (!(__indexOf.call(keys, key) >= 0 && key in attrs2 && attrs[key] === attrs2[key])) {
-            continue;
+          ret.push(['para'].concat(nodeToTree(node)));
+          break;
+        case 'div':
+        case 'span':
+          if (node.length <= 2) {
+          continue;
+          }
+          ret = ret.concat(nodeToTree(node));
+          break;
+        case 'strong': case 'em': case 'code': case 'a':
+          ret.push([node[0]].concat(nodeToTree(node)));
+          break;
+        case 'pre':
+          ret.push(['code_block'].concat(nodeToTree(node)));
+          break;
+        case 'ul':
+          ret.push(['bulletlist'].concat(nodeToTree(node)));
+          break;
+        case 'ol':
+          ret.push(['numberlist'].concat(nodeToTree(node)));
+          break;
+        case 'li':
+          ret.push(['listitem'].concat(nodeToTree(node)));
+          break;
+        default:
+          if (['strong', 'em', 'link', 'inlinecode'].indexOf(node[0]) > -1) {
+            rankkeys = ['strong', 'em', 'link', 'inlinecode'];
+            rank = {};
+            attrs = {}; //spanAttrs(node);
+            for (_j = 0, _len1 = rankkeys.length; _j < _len1; _j++) {
+              key = rankkeys[_j];
+              rank[key] = Number(attrs[key] != null);
             }
-            rank[key]++;
-            _results.push(key);
+            keys = (function() {
+              var _results;
+              _results = [];
+              for (key in attrs) {
+              _results.push(key);
+              }
+              return _results;
+            })();
+
+            for (j = _k = _ref1 = i + 1, _ref2 = n.length; _ref1 <= _ref2 ? _k < _ref2 : _k > _ref2; j = _ref1 <= _ref2 ? ++_k : --_k) {
+              nextspan = n[j];
+              if (!(typeofJSON(nextspan) === 'array' && nextspan[0] === 'a')) {
+              break;
+              }
+              attrs2 = spanAttrs(nextspan);
+              keys = (function() {
+              var _l, _len2, _results;
+              _results = [];
+              for (_l = 0, _len2 = rankkeys.length; _l < _len2; _l++) {
+                key = rankkeys[_l];
+                if (!(__indexOf.call(keys, key) >= 0 && key in attrs2 && attrs[key] === attrs2[key])) {
+                continue;
+                }
+                rank[key]++;
+                _results.push(key);
+              }
+              return _results;
+              })();
+            }
+
+            ranksort = (function() {
+              var _results;
+              _results = [];
+              for (key in attrs) {
+              _results.push(key);
+              }
+              return _results;
+            })();
+            ranksort.sort(function(a, b) {
+              return rank[b] - rank[a];
+            });
+
+            cur = ret;
+            for (_l = 0, _len2 = rankkeys.length; _l < _len2; _l++) {
+              key = rankkeys[_l];
+              last = cur[cur.length - 1];
+              if (typeof last === 'object' && (_ref3 = last[0], __indexOf.call(ranksort, _ref3) >= 0) && (last[0] !== 'link' || last[1].href === attrs.link)) {
+                cur = last;
+                ranksort.splice(ranksort.indexOf(last[0]), 1);
+              }
+            }
+
+            for (_m = 0, _len3 = ranksort.length; _m < _len3; _m++) {
+              key = ranksort[_m];
+              next = [key];
+              if (key === 'link') {
+              next.push({
+                href: attrs.link
+              });
+              }
+              cur.push(next);
+              cur = next;
+            }
+
+            _ref4 = nodeToTree(node);
+            for (_n = 0, _len4 = _ref4.length; _n < _len4; _n++) {
+              x = _ref4[_n];
+              cur.push(x);
+            }
           }
-          return _results;
-          })();
         }
-        ranksort = (function() {
-          var _results;
-          _results = [];
-          for (key in attrs) {
-          _results.push(key);
+      } else if (typeofJSON(node) === 'object' && node && node.type == 'insertEmptyTag') {
+        switch (node.tag) {
+        case 'hr':
+          ret.push(['hr']);
+          break;
+        case 'br':
+          ret.push(['linebreak']);
+          break;
+        case 'img':
+          ret.push([
+          'img', {
+            href: node.attrs.src
           }
-          return _results;
-        })();
-        ranksort.sort(function(a, b) {
-          return rank[b] - rank[a];
-        });
-        cur = ret;
-        for (_l = 0, _len2 = rankkeys.length; _l < _len2; _l++) {
-          key = rankkeys[_l];
-          last = cur[cur.length - 1];
-          if (typeof last === 'object' && (_ref3 = last[0], __indexOf.call(ranksort, _ref3) >= 0) && (last[0] !== 'link' || last[1].href === attrs.link)) {
-          cur = last;
-          ranksort.splice(ranksort.indexOf(last[0]), 1);
-          }
+          ]);
         }
-        for (_m = 0, _len3 = ranksort.length; _m < _len3; _m++) {
-          key = ranksort[_m];
-          next = [key];
-          if (key === 'link') {
-          next.push({
-            href: attrs.link
-          });
-          }
-          cur.push(next);
-          cur = next;
-        }
-        _ref4 = nodeToTree(node);
-        for (_n = 0, _len4 = _ref4.length; _n < _len4; _n++) {
-          x = _ref4[_n];
-          cur.push(x);
-        }
-        }
+      } else if (typeofJSON(node) === 'string') {
+        ret.push(node);
       }
-    } else if (typeofJSON(node) === 'object' && node && node.type == 'insertEmptyTag') {
-      switch (node.tag) {
-      case 'hr':
-        ret.push(['hr']);
-        break;
-      case 'br':
-        ret.push(['linebreak']);
-        break;
-      case 'img':
-        ret.push([
-        'img', {
-          href: node.attrs.src
-        }
-        ]);
-      }
-    } else if (typeofJSON(node) === 'string') {
-      ret.push(node);
-    }
     }
     return ret;
   };
+
   return function(n) {
     return ['markdown'].concat(__slice.call(nodeToTree(['html', {}].concat(__slice.call(n)))));
   };
 })();
 
 exports.parse = function (str) {
-  return Markdown.serializeTree(toMarkdownTree(tagr.parse(String(str), {whitespace: false}).toJSON().slice(2)));
+  var mdtree = toMarkdownTree(tagr.parse(String(str)).toJSON().slice(2));
+  console.log(mdtree);
+  return Markdown.serializeTree(mdtree);
 };
