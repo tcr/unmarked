@@ -1,13 +1,13 @@
 {
   "name": "unmarked",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Parse HTML into Markdown, a companion for marked.",
   "main": "index.js",
   "dependencies": {
     "htmlparser2": "~3.1.2",
     "tagr": "0.0.8"
   },
-  "repository": "",
+  "repository": "https://github.com/tcr/unmarked.git",
   "author": "",
   "license": "BSD"
 }

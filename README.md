@@ -11,7 +11,7 @@ npm install unmarked
 then
 
 ```
-require('unmarked').parse('<h1>Title</h1><p>Paragraph</p>');
+require('unmarked').parse('<h1>Title</h1><p>Paragraph</p>'); // "# Title\n\nParagraph"
 ```
 
 ## license
